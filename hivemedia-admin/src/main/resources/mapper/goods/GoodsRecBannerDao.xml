@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.modules.goods.dao.GoodsRecBannerDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.modules.goods.entity.GoodsRecBannerEntity" id="goodsRecBannerMap">
+        <result property="id" column="id"/>
+        <result property="tabId" column="tab_id"/>
+        <result property="picId" column="pic_id"/>
+        <result property="desc" column="desc"/>
+        <result property="url" column="url"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="queryGoodsRecBannerVoList" resultType="cn.hivemedia.modules.goods.vo.GoodsRecBannerVo">
+        select
+        grb.id,
+        (select d.value FROM sys_dict d where d.code = grb.tab_id and d.type='goodsTab') as tab_id,
+        grb.pic_id,
+        grb.desc,
+        o.url as pic_url,
+        grb.url,
+        grb.sort_no,
+        grb.type,
+        grb.create_time,
+        grb.update_time
+        FROM tb_goods_rec_banner grb
+        left join sys_oss o
+        on o.id = grb.pic_id
+        WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by  grb.create_time desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryGoodsRecBannerVo" resultType="cn.hivemedia.modules.goods.vo.GoodsRecBannerVo">
+        select
+        grb.id,
+        grb.tab_id,
+        grb.pic_id,
+        grb.desc,
+        o.url as pic_url,
+        grb.url,
+        grb.type,
+        grb.sort_no,
+        grb.create_time,
+        grb.update_time
+        FROM tb_goods_rec_banner grb
+        left join sys_oss o
+        on o.id = grb.pic_id
+        where grb.id = #{id}
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select count(1) from tb_goods_rec_banner
+        WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+    </select>
+
+</mapper>

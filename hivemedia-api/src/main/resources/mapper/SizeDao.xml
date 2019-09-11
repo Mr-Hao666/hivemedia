@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.dao.SizeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.entity.SizeEntity" id="sizeMap">
+        <result property="id" column="id"/>
+        <result property="desc" column="desc"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="getGoodsSizeInfoList" resultType="cn.hivemedia.entity.SizeEntity" parameterType="java.lang.Integer">
+        select s.id,s.desc,s.create_by,s.create_time
+        from tb_goods_size gs
+        left join tb_size s on s.id = gs.size_id
+        where gs.goods_id = #{goodsId}
+    </select>
+
+
+</mapper>

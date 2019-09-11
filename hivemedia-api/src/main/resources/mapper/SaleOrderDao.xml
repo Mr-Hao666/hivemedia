@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.dao.SaleOrderDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.entity.SaleOrderEntity" id="saleOrderMap">
+        <result property="id" column="id"/>
+        <result property="saleUserId" column="sale_user_id"/>
+        <result property="buyUserId" column="buy_user_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="cancelReason" column="cancel_reason"/>
+        <result property="goodsCount" column="goods_count"/>
+        <result property="amountTotal" column="amount_total"/>
+        <result property="orderAmountTotal" column="order_amount_total"/>
+        <result property="logisticsFee" column="logistics_fee"/>
+        <result property="makeOutInvoice" column="make_out_invoice"/>
+        <result property="invoiceNo" column="invoice_no"/>
+        <result property="address" column="address"/>
+        <result property="logisticsId" column="logistics_id"/>
+        <result property="payChannel" column="pay_channel"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="remarks" column="remarks"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="curState" column="cur_state"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="saleType" column="sale_type"/>
+        <result property="deposit" column="deposit"/>
+        <result property="bankFee" column="bank_fee"/>
+        <result property="goodsCheckFee" column="goods_check_fee"/>
+        <result property="packFee" column="pack_fee"/>
+        <result property="proceduresFee" column="procedures_fee"/>
+        <result property="expressFee" column="express_fee"/>
+    </resultMap>
+
+    <select id="purchaseList" parameterType="java.lang.Integer" resultType="cn.hivemedia.entity.model.SaleOrderQueryDto">
+        select so.id saleOrderId,MIN(so.amount_total) amountTotal,so.sale_user_id saleUserId,so.goods_id goodsId,
+               so.size_id sizeId,so.sale_type saleType,so.deposit deposit, ts.desc `desc`
+        from tb_sale_order so
+        left join tb_goods_size gs on gs.goods_id = so.goods_id and so.size_id = gs.size_id
+        left join tb_size ts on gs.size_id = ts.id
+        where so.goods_id = #{goodsId} and (so.sale_type = 1 or so.sale_type = 2) and so.is_sale=0 and so.cur_state = 1
+        group by so.size_id
+    </select>
+
+    <select id="queryListByGoodsId" resultType="cn.hivemedia.entity.model.OrderGoods">
+        SELECT bo.amount_total as orderAmountTotal, ts.`desc`, bo.create_time , bo.sale_type
+        FROM tb_sale_order bo LEFT JOIN tb_size ts ON bo.size_id = ts.id WHERE
+        bo.goods_id = #{goodsId} and bo.cur_state = 1 and bo.is_sale = 0
+        <if test="sizeId != null">
+            and bo.size_id = #{sizeId}
+        </if>
+        <if test="orderStatus != null">
+            and bo.order_status = #{orderStatus}
+        </if>
+        ORDER BY bo.create_time DESC
+    </select>
+    <select id="queryListAllByGoodsId" resultType="cn.hivemedia.entity.model.OrderGoods">
+        SELECT bo.amount_total as orderAmountTotal, ts.`desc`, bo.create_time , bo.sale_type
+        FROM tb_sale_order bo
+        LEFT JOIN tb_size ts ON bo.size_id = ts.id WHERE
+        bo.goods_id = #{goodsId} and bo.cur_state = 1 and bo.sale_type in (1,2)
+        and bo.order_status not in (-1,1,8) and bo.is_sale = 1
+        <if test="sizeId != null">
+            and bo.size_id = #{sizeId}
+        </if>
+        UNION
+        SELECT bo.amount_total as orderAmountTotal, ts.`desc`, bo.create_time, 0 as sale_type
+        FROM tb_buy_order bo
+        LEFT JOIN tb_size ts ON bo.size_id = ts.id WHERE
+        bo.goods_id = #{goodsId} and bo.cur_state = 1
+        and bo.order_status not in (-1,1,8)
+        <if test="sizeId != null">
+            and bo.size_id = #{sizeId}
+        </if>
+    </select>
+
+    <select id="selectPriceOrdersBiMinPrice" resultMap="saleOrderMap">
+        select *
+        from tb_sale_order
+        where amount_total > #{amountTotal} and order_status = 0
+        and goods_id = #{goodsId} and size_id = #{sizeId}
+        and is_sale = 0 and cur_state = 1
+    </select>
+
+    <select id="selectByPurchasePrice" resultMap="saleOrderMap">
+        select *
+        from tb_sale_order
+        where ( amount_total between (#{amountTotal} - 100) and (#{amountTotal} + 100) ) and order_status = 0
+        and goods_id = #{goodsId} and size_id = #{sizeId}
+        and is_sale = 0 and cur_state = 1
+    </select>
+
+    <select id="selectSaleOrderList" resultMap="saleOrderMap">
+        select *
+        from tb_sale_order
+        where order_status = 0
+        and goods_id = #{goodsId} and size_id = #{sizeId}
+        and is_sale = 0 and cur_state = 1
+    </select>
+
+
+
+
+</mapper>

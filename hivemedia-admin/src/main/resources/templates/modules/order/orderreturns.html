@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>订单退货表</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("order:orderreturns:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("order:orderreturns:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("order:orderreturns:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                    <div class="form-group">
+                        <div class="col-sm-2 control-label">退货编号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.returnsNo" placeholder="退货编号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">订单id</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.orderId" placeholder="订单id"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">物流单号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.expressNo" placeholder="物流单号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">收货人姓名</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.consigneeRealname" placeholder="收货人姓名"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">联系电话</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.consigneeTelphone" placeholder="联系电话"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">收货地址</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.consigneeAddress" placeholder="收货地址"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">邮政编码</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.consigneeZip" placeholder="邮政编码"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">物流方式 1:ems...</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.logisticsType" placeholder="物流方式 1:ems..."/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">退货运费</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.logisticsFee" placeholder="退货运费"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">物流状态</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.orderlogisticsStatus" placeholder="物流状态"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">物流描述</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.orderlogisticsDesc" placeholder="物流描述"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">创建时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.createTime" placeholder="创建时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">更新时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="orderReturns.updateTime" placeholder="更新时间"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/order/orderreturns.js?_${.now?long}"></script>
+</body>
+</html>

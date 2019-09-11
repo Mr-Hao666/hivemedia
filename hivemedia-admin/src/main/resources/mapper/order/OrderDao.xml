@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.modules.order.dao.OrderDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.modules.order.entity.OrderEntity" id="orderMap">
+        <result property="id" column="id"/>
+        <result property="saleUserId" column="sale_user_id"/>
+        <result property="buyUserId" column="buy_user_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="cancelReason" column="cancel_reason"/>
+        <result property="goodsCount" column="goods_count"/>
+        <result property="amountTotal" column="amount_total"/>
+        <result property="orderAmountTotal" column="order_amount_total"/>
+        <result property="logisticsFee" column="logistics_fee"/>
+        <result property="makeOutInvoice" column="make_out_invoice"/>
+        <result property="invoiceNo" column="invoice_no"/>
+        <result property="addressId" column="address_id"/>
+        <result property="logisticsId" column="logistics_id"/>
+        <result property="payChannel" column="pay_channel"/>
+        <result property="outTradeNo" column="out_trade_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="remarks" column="remarks"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="curState" column="cur_state"/>
+        <result property="couponId" column="coupon_id"/>
+    </resultMap>
+
+
+</mapper>

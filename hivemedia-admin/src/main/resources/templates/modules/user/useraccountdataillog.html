@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>账户明细日志表</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <#if shiro.hasPermission("user:useraccountdataillog:cash")>
+            <a class="btn btn-primary" @click="cash"><i class="fa fa-plus"></i>&nbsp;通过申请</a>
+            </#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                    <div class="form-group">
+                        <div class="col-sm-2 control-label">账户id</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.accountId" placeholder="账户id"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">变动类型 1:退换至微信 2:定金退回 3:支付保证金 4:微信转账...</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.changeType" placeholder="变动类型 1:退换至微信 2:定金退回 3:支付保证金 4:微信转账..."/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">变动金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.changeMoney" placeholder="变动金额"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">变动前金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.beforeChangeMoney" placeholder="变动前金额"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">创建时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.createTime" placeholder="创建时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">更新时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.updateTime" placeholder="更新时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">状态 0:有效 1:无效</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="userAccountDatailLog.state" placeholder="状态 0:有效 1:无效"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/user/useraccountdataillog.js?_${.now?long}"></script>
+</body>
+</html>

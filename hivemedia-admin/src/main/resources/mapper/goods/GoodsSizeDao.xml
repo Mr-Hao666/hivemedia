@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.modules.goods.dao.GoodsSizeDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.modules.goods.entity.GoodsSizeEntity" id="goodsSizeMap">
+        <result property="id" column="id"/>
+        <result property="sizeId" column="size_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="expectMaxPrice" column="expect_max_price"/>
+        <result property="expectMinPrice" column="expect_min_price"/>
+    </resultMap>
+
+    <select id="queryGoodsSizeVoList" resultType="cn.hivemedia.modules.goods.vo.GoodsSizeVo">
+        select
+        gs.id,
+        gs.size_id,
+        gs.goods_id,
+        gs.expect_max_price,
+        gs.expect_min_price,
+        g.name as goods_name,
+        g.art_no,
+        s.`desc` as size_desc
+        FROM tb_goods_size gs
+        left join tb_goods g
+        on g.id = gs.goods_id
+        left join tb_size s
+        on s.id = gs.size_id
+        WHERE 1=1
+        <if test="goodsName != null and goodsName.trim() != ''">
+            AND g.name LIKE concat('%',#{goodsName},'%')
+        </if>
+        <if test="artNo != null and artNo.trim() != ''">
+            AND g.art_no LIKE concat('%',#{artNo},'%')
+        </if>
+        <if test="goodsId != null">
+            AND gs.goods_id = #{goodsId}
+        </if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by gs.id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryGoodsSizeVo" resultType="cn.hivemedia.modules.goods.vo.GoodsSizeVo">
+      select
+        gs.id,
+        gs.size_id,
+        gs.goods_id,
+        gs.expect_max_price,
+        gs.expect_min_price,
+        g.name as goods_name,
+        s.`desc` as size_desc
+        FROM tb_goods_size gs
+        left join tb_goods g
+        on g.id = gs.goods_id
+        left join tb_size s
+        on s.id = gs.size_id
+        where gs.id = #{id}
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select count(1) from tb_goods_size gs
+        left join tb_goods g
+        on g.id = gs.goods_id
+        WHERE 1=1
+        <if test="goodsName != null and goodsName.trim() != ''">
+            AND g.name LIKE concat('%',#{goodsName},'%')
+        </if>
+        <if test="artNo != null and artNo.trim() != ''">
+            AND g.art_no LIKE concat('%',#{artNo},'%')
+        </if>
+    </select>
+</mapper>

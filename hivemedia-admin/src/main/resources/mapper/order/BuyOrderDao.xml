@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.modules.order.dao.BuyOrderDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.modules.order.entity.BuyOrderEntity" id="buyOrderMap">
+        <result property="id" column="id"/>
+        <result property="saleUserId" column="sale_user_id"/>
+        <result property="buyUserId" column="buy_user_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="cancelReason" column="cancel_reason"/>
+        <result property="goodsCount" column="goods_count"/>
+        <result property="amountTotal" column="amount_total"/>
+        <result property="orderAmountTotal" column="order_amount_total"/>
+        <result property="logisticsFee" column="logistics_fee"/>
+        <result property="makeOutInvoice" column="make_out_invoice"/>
+        <result property="invoiceNo" column="invoice_no"/>
+        <result property="address" column="address"/>
+        <result property="logisticsId" column="logistics_id"/>
+        <result property="payChannel" column="pay_channel"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="remarks" column="remarks"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="curState" column="cur_state"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="deposit" column="deposit"/>
+        <result property="expressFee" column="express_fee"/>
+        <result property="buyType" column="buy_type"/>
+        <result property="wantBuyDays" column="want_buy_days"/>
+    </resultMap>
+
+    <select id="selectOutOfTime" resultType="cn.hivemedia.modules.order.entity.BuyOrderEntity">
+        select * from tb_buy_order where create_time &lt; now() - INTERVAL  #{time} MINUTE
+        and order_status = #{orderStatus} limit #{index},#{size}
+    </select>
+
+    <select id="selectOutOfUpdateTime" resultType="cn.hivemedia.modules.order.entity.BuyOrderEntity">
+        select * from tb_buy_order where update_time &lt; now() - INTERVAL  #{time} MINUTE
+        and order_status = #{orderStatus} limit #{index},#{size}
+    </select>
+
+    <select id="selectMaxPurchasePrice" resultType="java.math.BigDecimal">
+        select max(amount_total)
+        from tb_buy_order
+        where buy_type = 2 and order_status = 0
+        and goods_id = #{goodsId} and size_id = #{sizeId} and is_cash = 0
+    </select>
+
+    <select id="selectLatestBuyOrder" resultType="cn.hivemedia.modules.order.entity.BuyOrderEntity" parameterType="java.lang.Integer">
+        select bo.goods_id goodsId,bo.size_id sizeId,bo.id ,bo.amount_total amountTotal,ts.desc sizeDesc
+        from tb_buy_order bo
+        left join tb_size ts on bo.size_id = ts.id
+        where bo.order_status not in (-1,0,1,5,10) and bo.goods_id = #{goodsId} and bo.cur_state = 1
+        order by bo.create_time desc limit 0,1
+    </select>
+
+</mapper>

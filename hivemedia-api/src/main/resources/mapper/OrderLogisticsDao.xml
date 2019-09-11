@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.dao.OrderLogisticsDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.entity.OrderLogisticsEntity" id="orderLogisticsMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="expressNo" column="express_no"/>
+        <result property="consigneeRealname" column="consignee_realname"/>
+        <result property="consigneeTelphone" column="consignee_telphone"/>
+        <result property="consigneeAddress" column="consignee_address"/>
+        <result property="consigneeZip" column="consignee_zip"/>
+        <result property="logisticsType" column="logistics_type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="orderType" column="order_type"/>
+    </resultMap>
+
+    <update id="updateOrderLogistics" parameterType="cn.hivemedia.entity.OrderLogisticsEntity">
+        update tb_order_logistics
+        <set>
+            <if test="expressNo != null">
+                express_no = #{expressNo},
+            </if>
+            <if test="consigneeRealname != null">
+                consignee_realname = #{consigneeRealname},
+            </if>
+            <if test="consigneeTelphone != null">
+                consignee_telphone = #{consigneeTelphone},
+            </if>
+            <if test="consigneeZip != null">
+                consignee_zip = #{consigneeZip},
+            </if>
+            <if test="logisticsType != null">
+                logistics_type = #{logisticsType},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where order_id = #{orderId} and order_type = #{orderType}
+    </update>
+
+
+</mapper>

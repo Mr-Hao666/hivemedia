@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.dao.UserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.entity.UserEntity" id="userMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="idCardNo" column="id_card_no"/>
+        <result property="phone" column="phone"/>
+        <result property="loginPwd" column="login_pwd"/>
+        <result property="avatarId" column="avatar_id"/>
+        <result property="gender" column="gender"/>
+        <result property="wxOpenId" column="wx_open_id"/>
+        <result property="wxToken" column="wx_token"/>
+        <result property="realNameAuthorized" column="real_name_authorized"/>
+        <result property="latestLoginTime" column="latest_login_time"/>
+        <result property="latestLoginIp" column="latest_login_ip"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="curState" column="cur_state"/>
+        <result property="qqOpenId" column="qq_open_id"/>
+        <result property="qqToken" column="qq_token"/>
+        <result property="weiboOpenId" column="weibo_open_id"/>
+        <result property="weiboToken" column="weibo_token"/>
+        <result property="personalSign" column="personal_sign"/>
+        <result property="alipayAccount" column="alipay_account"/>
+        <result property="alipayRealName" column="alipay_real_name"/>
+    </resultMap>
+
+</mapper>

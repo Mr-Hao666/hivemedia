@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>商品表</title>
+  <#include "/header.html">
+  <link rel="stylesheet" href="${request.contextPath}/statics/plugins/iview/css/iview.css">
+  <script src="${request.contextPath}/statics/plugins/iview/iview.min.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+  <div v-show="showList">
+    <div class="grid-btn">
+      <div class="form-group col-sm-2">
+        <input type="text" class="form-control" v-model="q.goodsName" @keyup.enter="query" placeholder="商品名称" style="width: 240px">
+      </div>
+      <div class="form-group col-sm-2">
+        <input type="text" class="form-control" v-model="q.artNo" @keyup.enter="query" placeholder="商品货号" style="width: 240px">
+      </div>
+      <a class="btn btn-default" @click="query">查询</a>
+      <a class="btn btn-default" @click="reloadSearch">重置</a>
+
+      <#if shiro.hasPermission("goods:goods:save")>
+      <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+    </#if>
+    <#if shiro.hasPermission("goods:goods:update")>
+    <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+  </#if>
+  <#if shiro.hasPermission("goods:goods:recommend")>
+  <a class="btn btn-primary" @click="recommend"><i class="fa fa-plus"></i>&nbsp;推荐</a>
+</#if>
+<#if shiro.hasPermission("goods:goods:delete")>
+<a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+</#if>
+</div>
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+</div>
+
+<div v-show="!showList" class="panel panel-default">
+  <div class="panel-heading"  style="margin-bottom: 30px">{{title}}</div>
+  <i-form ref="formValidate" :model="goods" :rules="ruleValidate" :label-width="120">
+    <Form-item label="商品Tab" prop="goodsTab">
+      <i-select style="width: 200px" v-model="goods.goodsTab" filterable label-in-value >
+        <i-option v-for="item in goodsTabs" :value="item.code" @click.native="changeTab(item.code)"
+                  :key="item.id">{{item.value}}
+        </i-option>
+      </i-select>
+    </Form-item>
+    <Form-item label="商品尺码" prop="goodsSizeList">
+      <Checkbox-group v-model="goods.goodsSizeList" >
+        <Checkbox :label="item.desc" v-for="item in sizeList" :key="item.id" :disabled="item.disabled">
+        </Checkbox>
+      </Checkbox-group>
+
+
+    </Form-item>
+    <Form-item label="商品名" prop="name">
+      <i-input v-model="goods.name" placeholder="商品名" style="width: 600px;"/>
+    </Form-item>
+    <Form-item label="商品描述" prop="desc">
+      <i-input v-model="goods.desc" placeholder="商品描述" style="width: 600px;"/>
+    </Form-item>
+    <Form-item label="商品货号" prop="artNo">
+      <i-input v-model="goods.artNo" placeholder="商品货号" style="width: 600px;"/>
+    </Form-item>
+    <Form-item label="商品关键字" prop="keyword">
+      <i-input v-model="goods.keyword" placeholder="商品关键字" style="width: 600px;"/>
+    </Form-item>
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品展示主图" prop="picShowUrl">
+          <i-input v-model="goods.picShowUrl" placeholder="商品展示主图"  readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccessMain" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.picShowUrl)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品详情图1" prop="picDetail1Url">
+          <i-input v-model="goods.picDetail1Url" placeholder="商品详情图1"  readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccess1" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.picDetail1Url)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品详情图2" prop="picDetail2Url">
+          <i-input v-model="goods.picDetail2Url" placeholder="商品详情图2"  readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccess2" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.picDetail2Url)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品详情图3" prop="picDetail3Url">
+          <i-input v-model="goods.picDetail3Url" placeholder="商品详情图3"  readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccess3" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.picDetail3Url)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品详情图4" prop="picDetail4Url">
+          <i-input v-model="goods.picDetail4Url" placeholder="商品详情图4"  readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccess4" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.picDetail4Url)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品详情图5" prop="picDetail5Url">
+          <i-input v-model="goods.picDetail5Url" placeholder="商品详情图5" readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccess5" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.picDetail5Url)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+
+
+    <Row>
+      <i-col span="16">
+        <Form-item label="商品详情底图" prop="baseMapUrl">
+          <i-input v-model="goods.baseMapUrl" placeholder="商品详情底图" readonly/>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <Upload style="width: 300px;" :action="baseURL+'/sys/oss/upload'" :format="['jpg','jpeg','png']"
+                  max-size="2048"
+                  :on-success="handleSuccess6" :on-format-error="handleFormatError"
+                  :show-upload-list="false"
+                  :on-exceeded-size="handleMaxSize">
+            <i-button icon="ios-cloud-upload-outline">上传图片</i-button>
+          </Upload>
+        </Form-item>
+      </i-col>
+      <i-col span="3">
+        <Form-item :label-width="1">
+          <i-button icon="eye" @click="eyeImageListPicUrl(goods.baseMapUrl)">预览图片</i-button>
+        </Form-item>
+      </i-col>
+    </Row>
+
+
+    <Form-item label="发售日期" prop="releaseDate">
+      <Date-picker  format="yyyy-MM-dd" type="date" @on-change="getReleaseDate" :value="goods.releaseDate" placeholder="发售日期"></Date-picker>
+    </Form-item>
+    <Form-item label="所属品牌名称" prop="brand">
+      <i-input v-model="goods.brand" placeholder="所属品牌名称" style="width: 600px;"/>
+    </Form-item>
+    <Form-item label="适用性别" prop="genderFor">
+      <Radio-group v-model="goods.genderFor">
+        <Radio label="0">
+          <span>不限</span>
+        </Radio>
+        <Radio label="1">
+          <span>男</span>
+        </Radio>
+        <Radio label="2">
+          <span>女</span>
+        </Radio>
+      </Radio-group>
+    </Form-item>
+    <Form-item label="单位计量" prop="unit">
+      <i-select style="width: 200px" v-model="goods.unit" filterable label-in-value>
+        <i-option v-for="item in units" :value="item.code"
+                  :key="item.id">{{item.value}}
+        </i-option>
+      </i-select>
+    </Form-item>
+    <Form-item label="上架" prop="isOnSale">
+      <Radio-group v-model="goods.isOnSale">
+        <Radio label="1">
+          <span>是</span>
+        </Radio>
+        <Radio label="0">
+          <span>否</span>
+        </Radio>
+      </Radio-group>
+    </Form-item>
+    <Form-item label="单次购买上限数" prop="limitTimes">
+      <Input-number :min="0" :step="1" v-model="goods.limitTimes" placeholder="单次购买上限数"
+                    style="width: 188px;"/>
+    </Form-item>
+    <Form-item label="标签" prop="label">
+      <i-select style="width: 200px" v-model="goods.label" filterable label-in-value>
+        <i-option v-for="item in labels" :value="item.code"
+                  :key="item.id">{{item.value}}
+        </i-option>
+      </i-select>
+    </Form-item>
+
+    <Form-item label="包邮" prop="isFreePost">
+      <Radio-group v-model="goods.isFreePost">
+        <Radio label="1">
+          <span>是</span>
+        </Radio>
+        <Radio label="0">
+          <span>否</span>
+        </Radio>
+
+      </Radio-group>
+    </Form-item>
+    <Form-item label="排序" prop="sortNo">
+      <Input-number :min="0" :step="1" v-model="goods.sortNo" placeholder="排序"
+                    style="width: 188px;"/>
+    </Form-item>
+    <Form-item>
+      <i-button type="primary" @click="handleSubmit('formValidate')" style="background-color: #286090;">确定</i-button>
+      <i-button type="warning" @click="reload" style="margin-left: 8px;background-color: #ec971f;"/>返回</i-button>
+    </Form-item>
+  </i-form>
+
+
+
+
+
+
+
+</div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/goods/goods.js?_${.now?long}"></script>
+</body>
+</html>

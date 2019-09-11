@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>消息推送表</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("sys:message:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("sys:message:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("sys:message:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                    <div class="form-group">
+                        <div class="col-sm-2 control-label">类型</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.type" placeholder="类型"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">标题</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.title" placeholder="标题"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">描述</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.desc" placeholder="描述"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">消息内容</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.content" placeholder="消息内容"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">接收人id(多个以逗号隔开)</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.toUserId" placeholder="接收人id(多个以逗号隔开)"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">预计发送时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.beginTime" placeholder="预计发送时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">结束时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.endTime" placeholder="结束时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">推送状态 1:等待推送；2:推送中；3:推送失败；4:推送成功</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.status" placeholder="推送状态 1:等待推送；2:推送中；3:推送失败；4:推送成功"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">1:系统通知 2:服务通知 3:活动通知(优先级更高,优先推送) ...</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.level" placeholder="1:系统通知 2:服务通知 3:活动通知(优先级更高,优先推送) ..."/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">是否已读 0:未读 1:已读</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.isRead" placeholder="是否已读 0:未读 1:已读"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">创建人id</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.createBy" placeholder="创建人id"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">创建时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.createdTime" placeholder="创建时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">更新时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.updatedTime" placeholder="更新时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">数据状态 0:有效 1:无效</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="message.delFlag" placeholder="数据状态 0:有效 1:无效"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/sys/message.js?_${.now?long}"></script>
+</body>
+</html>

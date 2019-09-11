@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.hivemedia.dao.BuyOrderDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.hivemedia.entity.BuyOrderEntity" id="buyOrderMap">
+        <result property="id" column="id"/>
+        <result property="saleUserId" column="sale_user_id"/>
+        <result property="buyUserId" column="buy_user_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="cancelReason" column="cancel_reason"/>
+        <result property="goodsCount" column="goods_count"/>
+        <result property="amountTotal" column="amount_total"/>
+        <result property="orderAmountTotal" column="order_amount_total"/>
+        <result property="logisticsFee" column="logistics_fee"/>
+        <result property="makeOutInvoice" column="make_out_invoice"/>
+        <result property="invoiceNo" column="invoice_no"/>
+        <result property="address" column="address"/>
+        <result property="logisticsId" column="logistics_id"/>
+        <result property="payChannel" column="pay_channel"/>
+        <result property="createTime" column="create_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="remarks" column="remarks"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="curState" column="cur_state"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="deposit" column="deposit"/>
+        <result property="expressFee" column="express_fee"/>
+        <result property="buyType" column="buy_type"/>
+        <result property="wantBuyDays" column="want_buy_days"/>
+    </resultMap>
+
+    <select id="queryListByGoodsId" resultType="cn.hivemedia.entity.model.OrderGoods">
+
+        SELECT bo.amount_total as orderAmountTotal, ts.desc as `desc`, bo.create_time as createTime
+         FROM tb_buy_order bo
+        LEFT JOIN tb_size ts ON bo.size_id = ts.id WHERE
+        bo.goods_id = #{goodsId} and bo.cur_state = 1
+        <if test="buyType != null">
+            and bo.buy_type = #{buyType}
+        </if>
+        <if test="sizeId != null">
+            and bo.size_id = #{sizeId}
+        </if>
+        <if test="orderStatus != null">
+            and bo.order_status = #{orderStatus}
+        </if>
+
+        ORDER BY bo.create_time DESC
+    </select>
+
+    <select id="queryLastFiveOrderByGoodsId" resultType="cn.hivemedia.entity.model.OrderGoods">
+
+        SELECT bo.amount_total as orderAmountTotal, ts.desc as `desc`, bo.create_time as createTime
+        FROM tb_buy_order bo
+        LEFT JOIN tb_size ts ON bo.size_id = ts.id WHERE
+        bo.goods_id = #{goodsId} and bo.cur_state = 1 and bo.order_status not in (-1,0,1,5,10)
+        <if test="buyType != null">
+            and bo.buy_type = #{buyType}
+        </if>
+        <if test="sizeId != null">
+            and bo.size_id = #{sizeId}
+        </if>
+        ORDER BY bo.create_time DESC
+        limit 0,5
+    </select>
+
+    <select id="querySaleGoodsAmountOrderBySize" resultType="cn.hivemedia.entity.model.SaleGoods">
+        SELECT MAX(bo.amount_total) AS amountTotal, ts.desc, ts.id AS sizeId
+        FROM tb_goods_size gs  LEFT JOIN tb_size ts ON gs.size_id = ts.id
+        LEFT JOIN tb_buy_order bo ON bo.goods_id = gs.goods_id AND bo.buy_type = 2 and bo.cur_state = 1
+        and bo.order_status = 0 and bo.is_cash = 0 and bo.size_id = gs.size_id
+        where gs.goods_id = #{goodsId}
+        GROUP BY ts.id
+    </select>
+    <select id="queryBuyGoodsAmountOrderBySize" resultType="cn.hivemedia.entity.model.SaleGoods">
+        SELECT
+            MIN( bo.amount_total ) AS amountTotal,
+            ts.DESC,
+            ts.id AS sizeId
+        FROM
+            tb_sale_order bo
+            LEFT JOIN tb_goods_size gs ON bo.goods_id = gs.goods_id
+            LEFT JOIN tb_size ts ON gs.size_id = ts.id
+        WHERE
+            bo.order_status = 0
+            AND bo.cur_state = 1
+            AND bo.goods_id = #{goodsId}
+        GROUP BY
+            bo.size_id;
+    </select>
+
+    <select id="queryBuyOrderAmountByGoodsSize" resultType="cn.hivemedia.entity.model.SaleGoods">
+        SELECT MIN(bo.amount_total) AS amountTotal, ts.desc, ts.id AS sizeId
+        FROM tb_goods_size gs LEFT JOIN tb_size ts ON gs.size_id = ts.id
+        LEFT JOIN tb_buy_order bo ON bo.goods_id = gs.goods_id AND bo.order_status not in (-1,0,1,5,10) and bo.cur_state = 1
+        WHERE ts.id = #{sizeId} AND bo.goods_id = #{goodsId}
+    </select>
+
+    <select id="offerPurchaseList" parameterType="java.lang.Integer" resultType="cn.hivemedia.entity.model.OfferPurchaseDto">
+        SELECT
+            bo.id saleOrderId,
+            MAX( bo.amount_total ) amountTotal,
+            bo.sale_user_id saleUserId,
+            gs.goods_id goodsId,
+            gs.size_id sizeId,
+            ts.DESC `desc`
+        FROM
+            tb_goods_size gs
+            LEFT JOIN tb_size ts ON gs.size_id = ts.id
+            LEFT JOIN tb_buy_order bo ON bo.buy_type = 2
+            AND bo.order_status = 0
+            AND bo.cur_state = 1
+            AND bo.is_cash = 0
+            AND gs.goods_id = bo.goods_id
+            AND bo.size_id = gs.size_id
+        WHERE
+            gs.goods_id = #{goodsId}
+        GROUP BY
+            ts.id;
+    </select>
+
+    <select id="selectMaxPurchasePrice" resultType="java.math.BigDecimal">
+        select max(amount_total)
+        from tb_buy_order
+        where buy_type = 2 and order_status = 0
+        and goods_id = #{goodsId} and size_id = #{sizeId} and is_cash = 0
+    </select>
+
+    <select id="selectLatestBuyOrder" resultType="cn.hivemedia.entity.BuyOrderEntity" parameterType="java.lang.Integer">
+        select bo.goods_id goodsId,bo.size_id sizeId,bo.id ,bo.amount_total amountTotal,ts.desc sizeDesc
+        from tb_buy_order bo
+        left join tb_size ts on bo.size_id = ts.id
+        where bo.order_status not in (-1,0,1,5,10) and bo.goods_id = #{goodsId} and bo.cur_state = 1
+        order by bo.create_time desc limit 0,1
+    </select>
+
+    <select id="getGoodsOfferPurchase" resultType="cn.hivemedia.entity.model.GoodsOfferPurchase">
+        SELECT bo.amount_total AS amountTotal, bo.id AS buyOrderId
+        FROM tb_buy_order bo
+        where bo.goods_id = #{goodsId} and bo.size_id = #{sizeId}  AND bo.buy_type = 2 and bo.cur_state = 1
+        and bo.order_status = 0 and bo.is_cash = 0
+        order by bo.amount_total desc limit 0,1
+    </select>
+
+
+</mapper>
