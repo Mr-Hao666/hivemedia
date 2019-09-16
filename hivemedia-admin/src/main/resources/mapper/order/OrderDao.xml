@@ -6,27 +6,31 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.hivemedia.modules.order.entity.OrderEntity" id="orderMap">
         <result property="id" column="id"/>
-        <result property="saleUserId" column="sale_user_id"/>
-        <result property="buyUserId" column="buy_user_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="blogId" column="blog_id"/>
+        <result property="platformId" column="platform_id"/>
         <result property="orderNo" column="order_no"/>
-        <result property="orderStatus" column="order_status"/>
-        <result property="cancelReason" column="cancel_reason"/>
-        <result property="goodsCount" column="goods_count"/>
-        <result property="amountTotal" column="amount_total"/>
-        <result property="orderAmountTotal" column="order_amount_total"/>
-        <result property="logisticsFee" column="logistics_fee"/>
-        <result property="makeOutInvoice" column="make_out_invoice"/>
-        <result property="invoiceNo" column="invoice_no"/>
-        <result property="addressId" column="address_id"/>
-        <result property="logisticsId" column="logistics_id"/>
-        <result property="payChannel" column="pay_channel"/>
-        <result property="outTradeNo" column="out_trade_no"/>
-        <result property="createTime" column="create_time"/>
-        <result property="payTime" column="pay_time"/>
-        <result property="remarks" column="remarks"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="curState" column="cur_state"/>
-        <result property="couponId" column="coupon_id"/>
+        <result property="publishDate" column="publish_date"/>
+        <result property="accountId" column="account_id"/>
+        <result property="accountType" column="account_type"/>
+        <result property="publishType" column="publish_type"/>
+        <result property="supply" column="supply"/>
+        <result property="itemType" column="item_type"/>
+        <result property="itemName" column="item_name"/>
+        <result property="url" column="url"/>
+        <result property="price" column="price"/>
+        <result property="tax" column="tax"/>
+        <result property="microtaskCost" column="microtask_cost"/>
+        <result property="externalCost" column="external_cost"/>
+        <result property="fansCost" column="fans_cost"/>
+        <result property="grossProfit" column="gross_profit"/>
+        <result property="otherCost" column="other_cost"/>
+        <result property="proportion" column="proportion"/>
+        <result property="royalty" column="royalty"/>
+        <result property="fixedRoyalty" column="fixed_royalty"/>
+        <result property="totalRoyalty" column="total_royalty"/>
     </resultMap>
 
 

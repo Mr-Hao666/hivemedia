@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>订单信息</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("order:order:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("order:order:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("order:order:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                    <div class="form-group">
+                        <div class="col-sm-2 control-label">单位ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.parentId" placeholder="单位ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">部门ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.deptId" placeholder="部门ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">小组ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.groupId" placeholder="小组ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">博主ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.blogId" placeholder="博主ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">平台ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.platformId" placeholder="平台ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">订单编号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.orderNo" placeholder="订单编号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">发布日期</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.publishDate" placeholder="发布日期"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">账号ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.accountId" placeholder="账号ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">账号类型</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.accountType" placeholder="账号类型"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">发布方式</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.publishType" placeholder="发布方式"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">类型补充</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.supply" placeholder="类型补充"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">项目类型</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.itemType" placeholder="项目类型"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">项目名称</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.itemName" placeholder="项目名称"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">链接</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.url" placeholder="链接"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">报价</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.price" placeholder="报价"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">扣税（按9.72%）</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.tax" placeholder="扣税（按9.72%）"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">微任务成本</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.microtaskCost" placeholder="微任务成本"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">外签/外部成本</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.externalCost" placeholder="外签/外部成本"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">粉丝头条</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.fansCost" placeholder="粉丝头条"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">计算提成（毛利润）金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.grossProfit" placeholder="计算提成（毛利润）金额"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">其他（如承担博主差旅费）</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.otherCost" placeholder="其他（如承担博主差旅费）"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">提成比率</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.proportion" placeholder="提成比率"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">比例提成金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.royalty" placeholder="比例提成金额"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">固定提成金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.fixedRoyalty" placeholder="固定提成金额"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">总提成金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="order.totalRoyalty" placeholder="总提成金额"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/order/order.js?_${.now?long}"></script>
+</body>
+</html>
