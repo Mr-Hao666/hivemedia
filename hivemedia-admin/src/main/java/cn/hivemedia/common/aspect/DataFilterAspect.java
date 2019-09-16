@@ -1,18 +1,13 @@
 package cn.hivemedia.common.aspect;
 
 import cn.hivemedia.common.annotation.DataFilter;
+import cn.hivemedia.common.exception.RRException;
+import cn.hivemedia.common.utils.Constant;
 import cn.hivemedia.modules.sys.entity.SysUserEntity;
 import cn.hivemedia.modules.sys.service.SysDeptService;
 import cn.hivemedia.modules.sys.service.SysRoleDeptService;
 import cn.hivemedia.modules.sys.service.SysUserRoleService;
 import cn.hivemedia.modules.sys.shiro.ShiroUtils;
-import cn.hivemedia.common.exception.RRException;
-import cn.hivemedia.common.utils.Constant;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,6 +16,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author ZengXiong
@@ -37,13 +37,13 @@ public class DataFilterAspect {
     @Autowired
     private SysRoleDeptService sysRoleDeptService;
 
-    @Pointcut("@annotation(DataFilter)")
-    public void dataFilterCut() {
+    @Pointcut(value = "@annotation(dataFilter)")
+    public void dataFilterCut(DataFilter dataFilter) {
 
     }
 
-    @Before("dataFilterCut()")
-    public void dataFilter(JoinPoint point) throws Throwable {
+    @Before("dataFilterCut(dataFilter)")
+    public void dataFilter(JoinPoint point, DataFilter dataFilter) throws Throwable {
         Object params = point.getArgs()[0];
         if (params != null && params instanceof Map) {
             SysUserEntity user = ShiroUtils.getUserEntity();

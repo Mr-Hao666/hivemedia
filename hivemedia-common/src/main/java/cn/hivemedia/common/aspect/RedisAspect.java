@@ -24,7 +24,7 @@ public class RedisAspect {
     @Value("${hivemedia.redis.open: false}")
     private boolean open;
 
-    @Around("execution(* RedisUtils.*(..))")
+    @Around("execution(* cn.hivemedia.common.utils.RedisUtils.*(..))")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         Object result = null;
         if(open){

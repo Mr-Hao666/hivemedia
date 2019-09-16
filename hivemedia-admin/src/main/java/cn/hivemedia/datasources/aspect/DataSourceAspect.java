@@ -24,13 +24,13 @@ import org.springframework.stereotype.Component;
 public class DataSourceAspect implements Ordered {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Pointcut("@annotation(DataSource)")
-    public void dataSourcePointCut() {
+    @Pointcut("@annotation(dataSource)")
+    public void dataSourcePointCut(DataSource dataSource) {
 
     }
 
-    @Around("dataSourcePointCut()")
-    public Object around(ProceedingJoinPoint point) throws Throwable {
+    @Around("dataSourcePointCut(dataSource)")
+    public Object around(ProceedingJoinPoint point, DataSource dataSource) throws Throwable {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
 

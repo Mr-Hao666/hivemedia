@@ -31,13 +31,13 @@ public class SysLogAspect {
     @Autowired
     private SysLogService sysLogService;
 
-    @Pointcut("@annotation(SysLog)")
-    public void logPointCut() {
+    @Pointcut("@annotation(sysLog)")
+    public void logPointCut(SysLog sysLog) {
 
     }
 
-    @Around("logPointCut()")
-    public Object around(ProceedingJoinPoint point) throws Throwable {
+    @Around("logPointCut(sysLog)")
+    public Object around(ProceedingJoinPoint point,SysLog sysLog) throws Throwable {
         long beginTime = System.currentTimeMillis();
         //执行方法
         Object result = point.proceed();
