@@ -9,7 +9,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #MySQL配置
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cn_buy?allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/hive_media?allowMultiQueries=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: mysql
     password: mysql123
     #oracle配置
@@ -19,12 +19,12 @@ spring:
 #    password: 123456
     #SQLServer配置
 #    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-#    url: jdbc:sqlserver://192.168.10.10:1433;DatabaseName=cn_buy
+#    url: jdbc:sqlserver://192.168.10.10:1433;DatabaseName=hive_media
 #    username: sa
 #    password: 123456
     #PostgreSQL配置
 #    driverClassName: org.postgresql.Driver
-#    url: jdbc:postgresql://192.168.10.10:5432/cn_buy
+#    url: jdbc:postgresql://192.168.10.10:5432/hive_media
 #    username: postgres
 #    password: 123456
   jackson:
