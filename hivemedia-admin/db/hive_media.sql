@@ -784,9 +784,27 @@ create table t_order(
   `royalty` decimal(10, 2) default 0.00 NULL COMMENT '比例提成金额',
   `fixed_royalty` decimal(10, 2) default 0.00 NULL COMMENT '固定提成金额',
   `total_royalty` decimal(10, 2) default 0.00 NULL COMMENT '总提成金额',
+  `status` tinyint default 0 NOT NULL COMMENT '状态：0 市场部新建订单；1 运营部完成待确认；2 市场部已确认；3 财务已结清 ',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单信息';
 
 -- ----------------------------
 -- Records of t_order
 -- ----------------------------
+
+-- 菜单SQL
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+VALUES ('1', '订单信息', 'modules/order/order.html', NULL, '1', 'fa fa-file-code-o', '6');
+
+-- 按钮父菜单ID
+set @parentId = @@identity;
+
+-- 菜单对应按钮SQL
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+SELECT @parentId, '查看', null, 'order:order:list,order:order:info', '2', null, '6';
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+SELECT @parentId, '新增', null, 'order:order:save', '2', null, '6';
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+SELECT @parentId, '修改', null, 'order:order:update', '2', null, '6';
+INSERT INTO `sys_menu` (`parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`)
+SELECT @parentId, '删除', null, 'order:order:delete', '2', null, '6';
