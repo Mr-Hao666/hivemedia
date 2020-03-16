@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cn.hivemedia</groupId>
-  <artifactId>hivemedia</artifactId>
+  <groupId>cn.honghuroad</groupId>
+  <artifactId>honghuroad</artifactId>
   <version>3.2.0</version>
   <packaging>pom</packaging>
 
-  <name>hivemedia</name>
-  <url>http://www.hivemedia.cn</url>
+  <name>honghuroad</name>
+  <url>http://www.honghuroad.cn</url>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -16,10 +16,10 @@
   </parent>
 
   <modules>
-    <module>hivemedia-common</module>
-    <module>hivemedia-admin</module>
-    <module>hivemedia-api</module>
-    <module>hivemedia-generator</module>
+    <module>honghuroad-common</module>
+    <module>honghuroad-admin</module>
+    <module>honghuroad-api</module>
+    <module>honghuroad-generator</module>
   </modules>
 
   <properties>

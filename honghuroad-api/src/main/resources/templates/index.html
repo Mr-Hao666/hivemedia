@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/apple-icon.png}">
+    <link rel="icon" type="image/png" th:href="@{/assets/img/favicon.png}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>洪湖城区互通高速收费站车辆及人员查验登记表</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!--     Fonts and icons     -->
+    <link th:href="@{/assets/css/font-awesome.css}" rel="stylesheet">
+    <link th:href="@{/assets/css/build.css}" rel="stylesheet">
+
+
+    <!-- CSS Files -->
+    <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/assets/css/index-bootstrap-wizard.css}" rel="stylesheet"/>
+    <link th:href="@{/assets/css/city-picker.css}" rel="stylesheet">
+
+</head>
+
+<body>
+<!--<div class="image-container set-full-height" style="background-image: url('../assets/img/wizard-city.jpg')">-->
+<div class="image-container set-full-height" style="background-color: #777777">
+
+<!--    &lt;!&ndash;  Made With Get Shit Done Kit  &ndash;&gt;-->
+<!--    <a th:href="#/get-shit-done/index.html?ref=get-shit-done-bootstrap-wizard" class="made-with-mk">-->
+<!--        <div class="brand">GK</div>-->
+<!--        <div class="made-with">Made with <strong>GSDK</strong></div>-->
+<!--    </a>-->
+
+    <!--   Big container   -->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <!--      Wizard container        -->
+                <div class="wizard-container">
+
+                    <div class="card wizard-card" data-color="orange" id="wizardProfile">
+
+                        <form id="data" action="" method="">
+                            <!--        You can switch ' data-color="orange" '  with one of the next bright colors: "blue", "green", "orange", "red"          -->
+                            <div class="wizard-header">
+                                <h3>
+                                    <div class="col-sm-12" style="text-align: center">
+                                        <img th:src="@{/assets/img/win.jpg}" style="width: 100%">
+                                    </div>
+                                    <br>
+                                    <b>人员查验登记</b>
+                                    <br>
+                                    <small>请根据提示填写.</small>
+                                </h3>
+                            </div>
+
+                            <div class="wizard-navigation">
+                                <ul id="title">
+                                    <li id="jib"><a href="#about" data-toggle="tab">驾驶员信息</a></li>
+                                    <li id="jiny"><a onclick="checkInput()" href="#account" data-toggle="tab">乘客信息</a></li>
+                                </ul>
+
+                            </div>
+
+                            <div class="tab-content">
+                                <div class="tab-pane" id="about">
+                                    <div class="row">
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>姓名</label>
+                                                <input name="iname" type="text" class="form-control" placeholder="...">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>电话</label>
+                                                <input name="phone0" type="number" class="form-control"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>身份证号</label>
+                                                <input  required name="post" type="text" class="form-control"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>车型</label>
+                                                <br>
+                                                <div class="radio radio-inline">
+                                                    <input type="radio" name="sex" id="radio1" value="小车" checked>
+                                                    <label for="radio1">
+                                                        小车
+                                                    </label>
+                                                </div>
+                                                <div class="radio radio-inline">
+                                                    <input type="radio" name="sex" id="radio2" value="货车">
+                                                    <label for="radio2">
+                                                        货车
+                                                    </label>
+                                                </div>
+                                                <div class="radio radio-inline">
+                                                    <input type="radio" name="sex" id="radio3" value="公务车">
+                                                    <label for="radio3">
+                                                        公务车
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>车牌号</label>
+                                                <input required name="nation" type="text" class="form-control" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>运输物资</label>
+                                                <input name="nation" type="text" class="form-control" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>驾驶证类别</label>
+                                                <select class="form-control" name="education">
+                                                    <option>C1</option>
+                                                    <option>C2</option>
+                                                    <option>B1</option>
+                                                    <option>B2</option>
+                                                    <option>D1</option>
+                                                    <option>D2</option>
+                                                    <option>E1</option>
+                                                    <option>E2</option>
+                                                    <option>E3</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>目的地</label>
+                                                <div class="docs-methods">
+                                                    <form class="form-inline">
+                                                        <div id="distpicker">
+                                                            <div class="form-group">
+                                                                <div style="position: relative;">
+                                                                    <input required id="city-picker3" name="nativePlace"
+                                                                           class="form-control" readonly type="text"
+                                                                           value="" data-toggle="city-picker">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label>体温</label>
+                                                <input name="marriage" type="text" class="form-control" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="account">
+                                    <div class="row">
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <div class="form-group">
+                                                <label><b>乘客信息</b><small>(无则不填)</small></label>
+                                                <table class="table table-striped table-condensed">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>姓名</th>
+                                                        <th>身份证号</th>
+                                                        <th>联系电话</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="family">
+                                                    <tr id="family1"name="family1">
+                                                        <td onclick="inputValue(this)">请点击<input required name="family1" type="hidden" value=""></td>
+                                                        <td onclick="inputValue(this)">请点击<input required name="family1" type="hidden" value=""></td>
+                                                        <td onclick="inputValue(this)">请点击<input required name="family1" type="hidden" value=""></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <input onclick="addMember(3)" type='button'
+                                                       class='btn  btn-fill btn-info btn-wd btn-sm' name='addmember'
+                                                       value='添加乘客'/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wizard-footer height-wizard">
+                                <div class="pull-right">
+                                    <input onclick="toNext()" type='button'  class='btn btn-next btn-fill btn-warning btn-wd btn-sm'
+                                           name='next' value='下一步'/>
+                                    <input onclick="put()" type='button' class='btn btn-finish btn-fill btn-warning btn-wd btn-sm'
+                                           name='finish' value='提交'/>
+
+                                </div>
+
+                                <div class="pull-left">
+                                    <input  id="back" type='button' class='btn btn-previous btn-fill btn-default btn-wd btn-sm'
+                                           name='previous' value='后退'/>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div> <!-- wizard container -->
+            </div>
+        </div><!-- end row -->
+    </div> <!--  big container -->
+
+    <div class="footer">
+        <div class="container">
+            有问题请联系IT办公室.
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+<!--   Core JS Files   -->
+<script th:src="@{/assets/js/jquery-2.2.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/assets/js/bootstrap.min.js}" type="text/javascript"></script>
+<script th:src="@{/assets/js/jquery.bootstrap.wizard.js}" type="text/javascript"></script>
+
+<!--  Plugin for the Wizard -->
+<script th:src="@{/assets/js/index-bootstrap-wizard.js}"></script>
+<script th:src="@{/assets/js/city-picker.data.js}"></script>
+<script th:src="@{/assets/js/city-picker.js}"></script>
+<script th:src="@{/assets/js/main.js}"></script>
+<script th:src="@{/assets/js/index.js}"></script>
+<!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
+<script th:src="@{/assets/js/jquery.validate.min.js}"></script>
+<script th:src="@{/assets/js/messages_zh.js}"></script>
+
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.honghuroad.modules.user.dao.UserAccountDatailLogDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="cn.honghuroad.modules.user.entity.UserAccountDatailLogEntity" id="userAccountDatailLogMap">
+        <result property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="changeType" column="change_type"/>
+        <result property="changeMoney" column="change_money"/>
+        <result property="beforeChangeMoney" column="before_change_money"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+
+</mapper>
